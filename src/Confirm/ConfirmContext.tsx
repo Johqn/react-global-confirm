@@ -66,11 +66,6 @@ export const ConfirmContextProvider = ({ children }) => {
 export const useConfirm = () => {
   const { confirmRef } = useContext(ConfirmContext);
   return {
-    confirm: useCallback(
-      (options: ConfirmOptions) => {
-        return confirmRef.current(options);
-      },
-      [confirmRef]
-    ),
+    confirm: confirmRef.current,
   };
 };

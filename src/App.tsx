@@ -6,6 +6,7 @@ const App = () => (
   <div>
     <ConfirmContextProvider>
       <Form />
+      <Form name="Form 2" />
     </ConfirmContextProvider>
   </div>
 );

@@ -1,22 +1,24 @@
 import { FormEvent, useState } from 'react';
 import { useConfirm } from './Confirm/ConfirmContext';
 
-const Form = () => {
+const Form = ({ name = 'Form' }) => {
   const [text, setText] = useState('');
   const handleTextInput = ({ currentTarget }: FormEvent<HTMLInputElement>) =>
     setText(currentTarget.value);
 
-  const { confirm } = useConfirm();
-
+  const [submittedText, setSubmittedText] = useState('');
   const doAction = () => {
     console.log('Action');
+    setSubmittedText(text);
   };
+
+  const { confirm } = useConfirm();
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (
       await confirm({
-        title: 'Custom confirm title',
+        title: `${name} confirmation`,
       })
     ) {
       doAction();
@@ -24,10 +26,13 @@ const Form = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input type="text" value={text} onInput={handleTextInput} />
-      <button type="submit">Submit</button>
-    </form>
+    <>
+      <form onSubmit={handleSubmit}>
+        <input type="text" value={text} onInput={handleTextInput} />
+        <button type="submit">Submit</button>
+      </form>
+      {submittedText ? <p>{submittedText}</p> : null}
+    </>
   );
 };
 
