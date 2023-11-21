@@ -1,5 +1,5 @@
+import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import classNames from '../utils/classNames';
 import './ConfirmDialog.css';
 
 const DEFAULT_TITLE = 'Confirmation';
@@ -19,28 +19,32 @@ const ConfirmDialog = ({
   isOpen = false,
   onConfirm,
   onCancel,
-}: Props) =>
-  createPortal(
-    <div
-      className={classNames([
-        'modal-container',
-        {
-          'modal-container-visible': isOpen,
-        },
-      ])}
-    >
-      <dialog open className="modal-dialog">
-        <form onSubmit={onConfirm} method="dialog">
-          <h2>{title}</h2>
-          {message}
-          <button type="submit">Confirm</button>
-          <button type="button" onClick={onCancel}>
-            Cancel
-          </button>
-        </form>
-      </dialog>
-    </div>,
+}: Props) => {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    if (!dialogRef.current) return;
+
+    if (isOpen) {
+      dialogRef.current.showModal();
+    } else {
+      dialogRef.current.close();
+    }
+  }, [isOpen]);
+
+  return createPortal(
+    <dialog ref={dialogRef} className="modal-dialog">
+      <form onSubmit={onConfirm} method="dialog">
+        <h2>{title}</h2>
+        <div>{message}</div>
+        <button type="submit">Confirm</button>
+        <button type="button" onClick={onCancel}>
+          Cancel
+        </button>
+      </form>
+    </dialog>,
     document.body
   );
+};
 
 export default ConfirmDialog;

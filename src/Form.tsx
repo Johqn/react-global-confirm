@@ -1,13 +1,24 @@
 import { FormEvent, useState } from 'react';
+import { confirm } from './Confirm/ConfirmWrapper';
 
 const Form = () => {
   const [text, setText] = useState('');
   const handleTextInput = ({ currentTarget }: FormEvent<HTMLInputElement>) =>
     setText(currentTarget.value);
 
-  const handleSubmit = (event: FormEvent) => {
+  const doAction = () => {
+    console.log('Action');
+  };
+
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    console.log(event);
+    if (
+      await confirm({
+        title: 'Mon titre',
+      })
+    ) {
+      doAction();
+    }
   };
 
   return (

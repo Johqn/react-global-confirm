@@ -1,9 +1,8 @@
 import {
   ComponentProps,
-  createContext,
-  createRef,
   PropsWithChildren,
   useContext,
+  useRef,
   useState,
 } from 'react';
 import ConfirmDialog from '../Confirm/ConfirmDialog';
@@ -15,41 +14,50 @@ type ConfirmOptions = Omit<
 
 const defauftConfirm = (_: ConfirmOptions) => Promise.resolve(true);
 
-const defaultContext = {
-  confirmRef: {
-    current: defauftConfirm,
-  },
+const confirmAction = {
+  current: defauftConfirm,
 };
 
-const ConfirmContext = createContext(defaultContext);
+export const confirm = (options: ConfirmOptions) => {
+  return confirmAction.current(options);
+};
 
 const ConfirmWrapper = ({ children }: PropsWithChildren) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const [options, setOptions] = useState<ConfirmOptions>({});
 
-  const confirmRef = createRef<typeof defauftConfirm>();
+  const resolveRef = useRef((_: boolean) => {});
 
-  const close = (confirmed: boolean) => {
-    setIsOpen(false);
-  };
+  confirmAction.current = (options) =>
+    new Promise((resolve) => {
+      setIsOpen(true);
+      setOptions(options);
+      resolveRef.current = resolve;
+    });
+
   const confirm = () => {
     console.log('confirm');
-    close(true);
+    setIsOpen(false);
+    resolveRef.current(true);
   };
+
   const cancel = () => {
     console.log('cancel');
-    close(false);
+    setIsOpen(false);
+    resolveRef.current(false);
   };
 
   return (
-    <ConfirmContext.Provider value={{ confirmRef }}>
+    <>
       {children}
-      <ConfirmDialog onConfirm={confirm} onCancel={cancel} isOpen={isOpen} />
-    </ConfirmContext.Provider>
+      <ConfirmDialog
+        {...options}
+        onConfirm={confirm}
+        onCancel={cancel}
+        isOpen={isOpen}
+      />
+    </>
   );
 };
 
 export default ConfirmWrapper;
-
-export const useConfirmDialog = () => {
-  useContext(ConfirmContext);
-};
