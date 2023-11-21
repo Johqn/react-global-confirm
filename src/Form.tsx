@@ -28,6 +28,7 @@ const Form = ({ name = 'Form' }) => {
   return (
     <>
       <form onSubmit={handleSubmit}>
+        <h3>{name}</h3>
         <input type="text" value={text} onInput={handleTextInput} />
         <button type="submit">Submit</button>
       </form>
