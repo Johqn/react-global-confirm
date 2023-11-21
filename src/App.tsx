@@ -1,12 +1,12 @@
 import './App.css';
-import ConfirmWrapper from './Confirm/ConfirmWrapper';
+import { ConfirmContextProvider } from './Confirm/ConfirmContext';
 import Form from './Form';
 
 const App = () => (
   <div>
-    <ConfirmWrapper>
+    <ConfirmContextProvider>
       <Form />
-    </ConfirmWrapper>
+    </ConfirmContextProvider>
   </div>
 );
 

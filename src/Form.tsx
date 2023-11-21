@@ -1,10 +1,12 @@
 import { FormEvent, useState } from 'react';
-import { confirm } from './Confirm/ConfirmWrapper';
+import { useConfirm } from './Confirm/ConfirmContext';
 
 const Form = () => {
   const [text, setText] = useState('');
   const handleTextInput = ({ currentTarget }: FormEvent<HTMLInputElement>) =>
     setText(currentTarget.value);
+
+  const { confirm } = useConfirm();
 
   const doAction = () => {
     console.log('Action');
@@ -14,7 +16,7 @@ const Form = () => {
     event.preventDefault();
     if (
       await confirm({
-        title: 'Mon titre',
+        title: 'Custom confirm title',
       })
     ) {
       doAction();
